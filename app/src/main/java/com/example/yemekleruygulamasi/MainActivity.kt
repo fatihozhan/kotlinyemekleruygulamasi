@@ -1,6 +1,7 @@
 package com.example.yemekleruygulamasi
 
 import android.app.Activity
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -35,6 +36,7 @@ import androidx.navigation.navArgument
 import com.example.yemekleruygulamasi.entity.Yemekler
 import com.example.yemekleruygulamasi.ui.theme.YemeklerUygulamasiTheme
 import com.example.yemekleruygulamasi.viewmodel.AnasayfaViewModel
+import com.example.yemekleruygulamasi.viewmodel.AnasayfaViewModelFactory
 import com.google.gson.Gson
 
 class MainActivity : ComponentActivity() {
@@ -66,7 +68,10 @@ fun DefaultPreview() {
 
 @Composable
 fun Anasayfa(navController: NavController) {
-    var viewModel : AnasayfaViewModel = viewModel()
+    val context = LocalContext.current
+    var viewModel: AnasayfaViewModel = viewModel(
+        factory = AnasayfaViewModelFactory(context.applicationContext as Application)
+    )
 
     val yemekListesi = viewModel.yemeklerListesi.observeAsState(listOf())
 
