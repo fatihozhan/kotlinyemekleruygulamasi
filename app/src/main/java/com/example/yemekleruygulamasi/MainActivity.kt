@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -24,13 +25,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.yemekleruygulamasi.entity.Yemekler
 import com.example.yemekleruygulamasi.ui.theme.YemeklerUygulamasiTheme
+import com.example.yemekleruygulamasi.viewmodel.AnasayfaViewModel
 import com.google.gson.Gson
 
 class MainActivity : ComponentActivity() {
@@ -62,21 +66,10 @@ fun DefaultPreview() {
 
 @Composable
 fun Anasayfa(navController: NavController) {
-    val yemekListesi = remember { mutableStateListOf<Yemekler>() }
-    LaunchedEffect(key1 = true) {
-        val y1 = Yemekler(1, "Köfte", "kofte", 15)
-        val y2 = Yemekler(2, "Ayran", "ayran", 2)
-        val y3 = Yemekler(3, "Fanta", "fanta", 3)
-        val y4 = Yemekler(4, "Makarna", "makarna", 14)
-        val y5 = Yemekler(5, "Kadayıf", "kadayif", 8)
-        val y6 = Yemekler(6, "Baklava", "baklava", 15)
-        yemekListesi.add(y1)
-        yemekListesi.add(y2)
-        yemekListesi.add(y3)
-        yemekListesi.add(y4)
-        yemekListesi.add(y5)
-        yemekListesi.add(y6)
-    }
+    var viewModel : AnasayfaViewModel = viewModel()
+
+    val yemekListesi = viewModel.yemeklerListesi.observeAsState(listOf())
+
     Scaffold(topBar = {
         TopAppBar(
             title = { Text(text = "Yemekler") },
@@ -87,9 +80,9 @@ fun Anasayfa(navController: NavController) {
         it
         LazyColumn {
             items(
-                count = yemekListesi.count(),
+                count = yemekListesi.value!!.count(),
                 itemContent = {
-                    val yemek = yemekListesi[it]
+                    val yemek = yemekListesi.value!![it]
                     Card(
                         modifier = Modifier
                             .padding(all = 5.dp)

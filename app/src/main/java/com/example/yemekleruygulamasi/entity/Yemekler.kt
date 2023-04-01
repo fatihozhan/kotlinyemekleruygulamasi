@@ -1,4 +1,4 @@
-package com.example.yemekleruygulamasi
+package com.example.yemekleruygulamasi.entity
 
 data class Yemekler(
     var yemek_id: Int,
