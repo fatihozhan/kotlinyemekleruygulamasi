@@ -38,6 +38,7 @@ import com.example.yemekleruygulamasi.ui.theme.YemeklerUygulamasiTheme
 import com.example.yemekleruygulamasi.viewmodel.AnasayfaViewModel
 import com.example.yemekleruygulamasi.viewmodel.AnasayfaViewModelFactory
 import com.google.gson.Gson
+import com.skydoves.landscapist.glide.GlideImage
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,14 +105,9 @@ fun Anasayfa(navController: NavController) {
                                     .fillMaxWidth()
                             ) {
                                 val activity = (LocalContext.current as Activity)
-                                Image(
-                                    bitmap = ImageBitmap.imageResource(
-                                        id = activity.resources.getIdentifier(
-                                            yemek.yemek_resim_adi,
-                                            "drawable",
-                                            activity.packageName
-                                        )
-                                    ), contentDescription = "", modifier = Modifier.size(100.dp)
+                                GlideImage(
+                                    imageModel = "http://kasimadalan.pe.hu/yemekler/resimler/${yemek.yemek_resim_adi}",
+                                    modifier = Modifier.size(100.dp)
                                 )
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
