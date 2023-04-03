@@ -118,7 +118,7 @@ fun Anasayfa(navController: NavController) {
                                         verticalArrangement = Arrangement.SpaceEvenly,
                                         modifier = Modifier.fillMaxHeight()
                                     ) {
-                                        Text(text = yemek.yemek_adi, fontSize = 20.sp)
+                                        Text(text = yemek.yemek_adi!!, fontSize = 20.sp)
                                         Spacer(modifier = Modifier.size(30.dp))
                                         Text(
                                             text = "${yemek.yemek_fiyati} ₺",

@@ -7,6 +7,7 @@ import com.example.yemekleruygulamasi.entity.YemeklerCevap
 import com.example.yemekleruygulamasi.retrofit.ApiUtlils
 import com.example.yemekleruygulamasi.retrofit.YemeklerDaoInterface
 import com.example.yemekleruygulamasi.room.Veritabani
+import com.google.firebase.database.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,11 +18,13 @@ import retrofit2.Response
 
 class YemeklerDaoRepository(var application: Application) {
     var yemeklerListesi = MutableLiveData<List<Yemekler>>()
-    var yemeklerDaoInterface : YemeklerDaoInterface
+    var refYemekler: DatabaseReference
 
     init {
         yemeklerListesi = MutableLiveData()
-        yemeklerDaoInterface = ApiUtlils.getYemeklerDaoInterface()
+        var db = FirebaseDatabase.getInstance()
+        refYemekler =
+            db.getReference("https://start-e1f22-default-rtdb.europe-west1.firebasedatabase.app")
     }
 
     fun yemekleriGetir(): MutableLiveData<List<Yemekler>> {
@@ -29,14 +32,22 @@ class YemeklerDaoRepository(var application: Application) {
     }
 
     fun tumYemekleriAl() {
-      yemeklerDaoInterface.tumYemekler().enqueue(object : Callback<YemeklerCevap>{
-          override fun onResponse(call: Call<YemeklerCevap>, response: Response<YemeklerCevap>) {
-              val liste = response.body()!!.yemekler
-              yemeklerListesi.value = liste
-          }
+        refYemekler.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val liste = ArrayList<Yemekler>()
+                for (d in snapshot.children) {
+                    val yemek = d.getValue(Yemekler::class.java)
+                    if (yemek != null) {
+                        yemek.yemek_id = d.key
+                        liste.add(yemek)
+                    }
+                }
+                yemeklerListesi.value = liste
+            }
 
-          override fun onFailure(call: Call<YemeklerCevap>, t: Throwable) {}
+            override fun onCancelled(error: DatabaseError) {}
 
-      })
+        }
+        )
     }
 }
